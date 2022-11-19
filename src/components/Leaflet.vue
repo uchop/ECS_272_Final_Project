@@ -12,7 +12,7 @@ export default {
   data() {
     return {
     //   count: 0
-    map: null
+    // map: null
     }
   },
   props: {
@@ -22,7 +22,11 @@ export default {
   methods: {
 
     initializeLeafletMap() {
-        this.map = L.map("map-container").setView([50, 10], 2);
+        let map = L.map("map-container", {
+          minZoom: 2,
+          maxZoom: 4,
+          zoomSnap: 0.05
+        }).setView([25, 10], 2);
 
         // Commented line below is for using default map with mixed country languages
         // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -38,8 +42,53 @@ export default {
           accessToken:
             "pk.eyJ1IjoiYWJpZGlzaGFqaWEiLCJhIjoiY2l3aDFiMG96MDB4eDJva2l6czN3MDN0ZSJ9.p9SUzPUBrCbH7RQLZ4W4lQ",
         }
-      ).addTo(this.map);
-      this.map.setMaxBounds(this.map.getBounds());
+      ).addTo(map);
+      map.setMaxBounds(map.getBounds());
+
+      const testIcon = L.icon({
+        iconUrl: 'https://web.northeastern.edu/mihc/images/NortheasternLogo.png',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -10],
+      });
+
+      const coolCat = L.icon({
+        iconUrl: 'https://img.pngio.com/download-cool-cat-png-image-library-library-coolcat-boogie-cool-cat-png-352_352.png',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -10],
+      });
+
+      // const photoImg = '<img src="https://static.pexels.com/photos/189349/pexels-photo-189349.jpeg" height="150px" width="150px"/>';
+      const photoImg = '<img src="src/bar_charts/Norway.png" height="175px" width="175px"/>'
+
+      // const marker = L.marker([42.3377,-71.0908], {icon: testIcon});
+      const marker = L.marker([64.5783089, 17.888237], {icon: testIcon});
+      // marker.bindPopup("<b>School of Journalism</b><br>Northeastern University."); // "bind" basically means "connect"
+      marker.bindPopup(photoImg); // "bind" basically means "connect"
+
+      const marker2 = L.marker([-17.978733, -38.320312], {icon: coolCat});
+      marker2.bindPopup("<b>Cool place</b><br>for cool cats");
+
+      var continentLayer = new L.FeatureGroup();
+      var countryLayer = new L.FeatureGroup();
+      continentLayer.addLayer(marker);
+      countryLayer.addLayer(marker2);
+      map.addLayer(continentLayer)
+      
+      map.on('zoomend', function() {
+          if (map.getZoom() === 2){
+            map.addLayer(continentLayer);
+            map.removeLayer(countryLayer);
+          }
+          else {
+            map.removeLayer(continentLayer);
+            map.addLayer(countryLayer);
+          }
+      });
+
+
+
     }
   },
 
