@@ -1,9 +1,12 @@
 <template>
   <LeafletVue msg= "Testing props"/>
+  <!-- <BarChartVue /> -->
 </template>
 
 <script>
+import BarChartVue from './components/BarChart.vue';
 import LeafletVue from './components/Leaflet.vue';
+
 
 export default {
   // Properties returned from data() become reactive state
@@ -14,7 +17,8 @@ export default {
     }
   },
   components: {
-    LeafletVue
+    LeafletVue,
+    BarChartVue
     },
 
   // Methods are functions that mutate state and trigger updates.
