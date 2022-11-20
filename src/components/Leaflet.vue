@@ -56,8 +56,8 @@ export default {
 
 <style scoped>
 #map-container {
-  width: 90vw;
-  height: 90vh;
+  width: 92vw;
+  height: 92vh;
   margin-left: 4%;
   margin-top: 2%
 }
