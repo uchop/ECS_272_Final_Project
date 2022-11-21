@@ -94,7 +94,7 @@ export default {
     // *****************************************************************************************  
       
       map.on('zoomend', function() {
-          if (map.getZoom() === 2){
+          if (map.getZoom() < 4){
             map.addLayer(continentLayer);
             map.removeLayer(countryLayer);
           }
