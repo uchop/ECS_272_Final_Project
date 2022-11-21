@@ -55,29 +55,11 @@ export default {
         popupAnchor: [0, -10],
       });
 
-      const glyph = L.icon({
-        iconUrl: 'src/bar_charts/glyph.png',
-        iconSize: [70, 70],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -10],
-      });
-
-      // const photoImg = '<h3>Test Title</h3><img src="src/bar_charts/Norway.png" height="175px" width="175px"/>'
-
-      // const marker = L.marker([42.3377,-71.0908], {icon: testIcon});
-      // const marker = L.marker([64.5783089, 17.888237], {icon: testIcon});
-      // marker.bindPopup("<b>School of Journalism</b><br>Northeastern University."); // "bind" basically means "connect"
-      // marker.bindPopup(photoImg); // "bind" basically means "connect"
-
-      const marker2 = L.marker([-17.978733, -38.320312], {icon: glyph});
-      marker2.bindPopup("<b>Cool place</b><br>for cool cats");
-
-      // make this async await and use arrow function
+    // *****************************************************************************************
       var continentLayer = new L.FeatureGroup();
       var countryLayer = new L.FeatureGroup();
-      // continentLayer.addLayer(marker);
-      // countryLayer.addLayer(marker2);
-      
+
+    // *****************************************************************************************   
       const continents = [
         {name: "Africa", coordinates : [6.303731, 23.487895]},
         {name: "Asia", coordinates : [46.800059, 116.71875]},
@@ -97,48 +79,19 @@ export default {
       const data = await response.json();
       data.forEach(d => {
             if (coordinates.hasOwnProperty(d.name.common)) {
-                var photoImg = `<h3>${d.name.common}</h3><img src="src/bar_charts/Norway.png" height="175px" width="175px"/>`;
+                const nameWithoutSpaces = d.name.common.replace(/\s/g, "");
+                var glyph = L.icon({
+                  iconUrl: `src/assets/glyph/${nameWithoutSpaces}-glyph.png`,
+                  iconSize: [70, 70],
+                  iconAnchor: [20, 20],
+                  popupAnchor: [0, -10],
+                });
+                var photoImg = `<h3>${nameWithoutSpaces}</h3><img src=src/assets/bar/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
                 coordinates[d.name.common] = [d.latlng[0], d.latlng[1]];
                 countryLayer.addLayer(L.marker(coordinates[d.name.common], {icon: glyph}).bindPopup(photoImg));
             }
           });
-          
-
-      // const fetchData = async () => {
-      //     return (await fetch('https://restcountries.com/v3.1/all')).json();
-      // }
-      // const data = async () => (await (await fetch('https://restcountries.com/v3.1/all')).json())
-      // console.log(json);
-
-      // console.log('HELLO');
-
-      // var continentLayer = new L.FeatureGroup();
-      // var countryLayer = new L.FeatureGroup();
-      // continentLayer.addLayer(marker);
-      // countryLayer.addLayer(marker2);
-      // map.addLayer(continentLayer)
-
-      // this.make132FreakingMarkers();
-
-      // fetch('https://restcountries.com/v3.1/all')
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     data.forEach(d => {
-      //       if (coordinates.hasOwnProperty(d.name.common)) {
-      //           coordinates[d.name.common] = [d.latlng[0], d.latlng[1]];
-      //           L.marker(coordinates[d.name.common], {icon: glyph}).bindPopup(photoImg);
-      //       }
-      //     });
-      //     console.log(coordinates)
-      //   });
-
-      // var continentLayer = new L.FeatureGroup();
-      // var countryLayer = new L.FeatureGroup();
-      // continentLayer.addLayer(marker);
-      // countryLayer.addLayer(marker2);
-      // map.addLayer(continentLayer)
-
-      // console.log(coordinates);
+    // *****************************************************************************************  
       
       map.on('zoomend', function() {
           if (map.getZoom() === 2){
@@ -151,19 +104,12 @@ export default {
           }
       });
 
-
-
+      // *****************************************************************************************
     }
   },
-
-  // Lifecycle hooks are called at different stages
-  // of a component's lifecycle.
-  // This function will be called when the component is mounted.
+  
   mounted() {
-    // this.make132FreakingMarkers();
     this.initializeLeafletMap();
-    // console.log(`The initial count is ${this.count}.`)
-    // console.log(`The initial count is ${this.msg}.`)
   }
 }
 </script>
