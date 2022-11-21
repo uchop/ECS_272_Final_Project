@@ -1,5 +1,5 @@
 <template>
-  <LeafletVue msg= "Testing props"/>
+  <LeafletVue v-if="dataExists" :myData="myCsvData"/>
   <ParallelCoordinatesVue v-if="dataExists" :myData="myCsvData"/>
   
   <!-- Add this one in ONLY if you want to generate PNGs, else keep commented out-->
@@ -39,7 +39,7 @@ export default {
       //async method
       this.myCsvData = d3.csvParse(await csvPath, d3.autoType)
       this.dataExists = true;
-      console.log(this.myCsvData)
+      // console.log(this.myCsvData)
       // d3.csv(csvPath.text()).then((data) =>{
       //           console.log(data.length);
       //           //console.log(data);

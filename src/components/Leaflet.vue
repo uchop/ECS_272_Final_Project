@@ -5,25 +5,135 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import BarChartVue from "./BarChart.vue";
 import coordinates from '../data/coordinates.json'
 
 export default {
   name: "LeafletVue",
   data() {
     return {
-    //   count: 0
-    // map: null
+      countryArray: [],
+      countryMap: {},
     }
   },
-  components: {
-    BarChartVue
-  },
   props: {
-    msg: String
+    myData: Array
   },
+  mounted() {
+    this.countryArray = this.preProcessCountry(this.myData);
+    this.countryArray.sort(function(a, b){return b.avg_happiness_score - a.avg_happiness_score})
+    this.assignRanking(this.countryArray);
 
+    console.log(Object.keys(this.countryMap).length);
+    this.initializeLeafletMap();
+  },
   methods: {
+    assignRanking(arr) {
+      arr.forEach((a, i) => {
+        this.countryMap[a.country] = i + 1;
+      });
+    },
+
+    preProcessCountry(arr) {
+      var countryMap = new Map();
+
+      arr.forEach(d => {
+          if (!countryMap.has(d.Country)) {
+          countryMap.set(d.Country, [d]);
+          }
+          else {
+          var temp = countryMap.get(d.Country);
+          temp.push(d);
+          countryMap.set(d.Country, temp);
+          }
+      });
+
+      var averagedCountries = []
+      for (let [key, value] of countryMap) {
+          var avg_happiness_score = 0;
+          var avg_gdp_per_capita = 0;
+          var avg_family = 0;
+          var avg_health = 0;
+          var avg_freedom = 0;
+          var avg_generosity = 0;
+          var avg_government_trust = 0;
+          var avg_dystopia_residual = 0;
+          var avg_social_support = 0;
+          var avg_cpi_score = 0;
+
+          var happiness_score_count = 0;
+          var gdp_per_capita_count = 0;
+          var family_count = 0;
+          var health_count = 0;
+          var freedom_count = 0;
+          var generosity_count = 0;
+          var government_trust_count = 0;
+          var dystopia_residual_count = 0;
+          var social_support_count = 0;
+          var cpi_score_count = 0;
+
+          var country = {}
+          value.forEach(d => {
+          country['country'] = d.Country;
+          country['continent'] = d.continent;
+          if (d.happiness_score != 0) {
+              avg_happiness_score += d.happiness_score;
+              happiness_score_count += 1;
+          }
+          if (d.gdp_per_capita != 0) {
+              avg_gdp_per_capita +=  d.gdp_per_capita;
+              gdp_per_capita_count += 1;
+          }
+          if (d.family != 0) {
+              avg_family += d.family;
+              family_count += 1;
+          }
+          if (d.health != 0) {
+              avg_health += d.health;
+              health_count += 1;
+          }
+          if (d.freedom != 0) {
+              avg_freedom += d.freedom;
+              freedom_count += 1;
+          }
+          if (d.generosity != 0) {
+              avg_generosity += d.generosity;
+              generosity_count += 1;
+          }
+          if (d.government_trust != 0) {
+              avg_government_trust += d.government_trust;
+              government_trust_count += 1;
+          }
+          if (d.dystopia_residual != 0) {
+              avg_dystopia_residual += d.dystopia_residual;
+              dystopia_residual_count += 1;
+          }
+          if (d.social_support != 0) {
+              avg_social_support += d.social_support;
+              social_support_count += 1;
+          }
+          if (d.cpi_score != 0) {
+              avg_cpi_score += d.cpi_score;
+              cpi_score_count += 1;
+          }
+
+          });
+          country.avg_happiness_score = avg_happiness_score / happiness_score_count;
+          country.avg_gdp_per_capita = avg_gdp_per_capita / gdp_per_capita_count;
+          country.avg_family = avg_family / family_count;
+          country.avg_health = avg_health / health_count;
+          country.avg_freedom = avg_freedom / freedom_count;
+          country.avg_generosity = avg_generosity / generosity_count;
+          country.avg_government_trust = avg_government_trust / government_trust_count;
+          country.avg_dystopia_residual = avg_dystopia_residual / dystopia_residual_count;
+          country.avg_social_support = avg_social_support / social_support_count;
+          country.avg_cpi_score = avg_cpi_score / cpi_score_count;
+          averagedCountries.push(country)
+      }
+
+      return averagedCountries
+    },
+
+
     async initializeLeafletMap() {
         let map = L.map("map-container", {
           minZoom: 2,
@@ -70,8 +180,15 @@ export default {
     ]
       
     continents.forEach(c => {
-      var photoImg = `<h3>${c.name}</h3><img src="src/bar_charts/Norway.png" height="175px" width="175px"/>`;
-      continentLayer.addLayer(L.marker(c.coordinates, {icon: testIcon}).bindPopup(photoImg));
+      const nameWithoutSpaces = c.name.replace(/\s/g, "");
+      var glyph = L.icon({
+        iconUrl: `src/assets/glyph/continents/${nameWithoutSpaces}-glyph.png`,
+        iconSize: [200, 200],
+        //iconAnchor: [0, 0],
+        popupAnchor: [0, -10],
+      });
+      var photoImg = `<h3>${c.name}</h3><img src=src/assets/bar/continents/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
+      continentLayer.addLayer(L.marker(c.coordinates, {icon: glyph}).bindPopup(photoImg));
     });
     map.addLayer(continentLayer)
 
@@ -86,13 +203,14 @@ export default {
                   //iconAnchor: [0, 0],
                   popupAnchor: [0, -10],
                 });
-                var photoImg = `<h3>${nameWithoutSpaces}</h3><img src=src/assets/bar/countries/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
+                const ranking = this.countryMap[d.name.common];
+                var photoImg = `<h3>${d.name.common}, Rank #${ranking}</h3><img src=src/assets/bar/countries/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
                 coordinates[d.name.common] = [d.latlng[0], d.latlng[1]];
                 countryLayer.addLayer(L.marker(coordinates[d.name.common], {icon: glyph}).bindPopup(photoImg));
             }
           });
     // *****************************************************************************************  
-      
+
       map.on('zoomend', function() {
           if (map.getZoom() < 4){
             map.addLayer(continentLayer);
@@ -107,10 +225,6 @@ export default {
       // *****************************************************************************************
     }
   },
-  
-  mounted() {
-    this.initializeLeafletMap();
-  }
 }
 </script>
 
@@ -122,3 +236,97 @@ export default {
   margin-top: 2%
 }
 </style>
+
+<!-- // const glyph = L.icon({
+  //   iconUrl: 'src/bar_charts/glyph.png',
+  //   iconSize: [70, 70],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const afghanGlyph = L.icon({
+  //   iconUrl: 'src/bar_charts/Afghanistan-glyph.png',
+  //   iconSize: [70, 70],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const norwayGlyph = L.icon({
+  //   iconUrl: 'src/bar_charts/Norway-glyph.png',
+  //   iconSize: [70, 70],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const afghanGlyphBig = L.icon({
+  //   iconUrl: 'src/bar_charts/Afghanistan-glyph.png',
+  //   iconSize: [100, 100],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const norwayGlyphBig = L.icon({
+  //   iconUrl: 'src/bar_charts/Norway-glyph.png',
+  //   iconSize: [100, 100],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const afghanGlyphBigger = L.icon({
+  //   iconUrl: 'src/bar_charts/Afghanistan-glyph.png',
+  //   iconSize: [130, 130],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+  // const norwayGlyphBigger = L.icon({
+  //   iconUrl: 'src/bar_charts/Norway-glyph.png',
+  //   iconSize: [130, 130],
+  //   iconAnchor: [20, 20],
+  //   popupAnchor: [0, -10],
+  // });
+
+
+//     const afghanMarker = L.marker([35.047343, 65.130580], {icon: afghanGlyph}).addTo(map);
+//     const norwayMarker = L.marker([62.394931, 7.790979], {icon: norwayGlyph}).addTo(map);
+
+//     const afghanBarChart = `<h3>Afghanistan</h3><img src="src/bar_charts/Afghanistan-bar.png" height="200px" width="200px"/>`
+//     afghanMarker.bindPopup(afghanBarChart);
+
+//     const norwayBarChart = `<h3>Norway</h3><img src="src/bar_charts/Norway-bar.png" height="200px" width="200px"/>`
+//     norwayMarker.bindPopup(norwayBarChart);
+
+//     var afghanLayer = new L.GeoJSON();
+//     var norwayLayer = new L.GeoJSON();
+//     afghanLayer.addLayer(afghanMarker);
+//     norwayLayer.addLayer(norwayMarker);
+//     const defaultIconSize = [70, 70]
+//     const zoomedInIconSize = [100, 100]
+//     const maxIconSize = [130, 130]
+
+//     map.on('zoomend', function() {
+//     var currentZoom = map.getZoom();
+//     if (currentZoom === 2 || currentZoom === 3) {
+//         afghanLayer.eachLayer(function(layer) {
+//           return layer.setIcon(afghanGlyph);
+//         });
+//         norwayLayer.eachLayer(function(layer) {
+//           return layer.setIcon(norwayGlyph);
+//         });
+//     }
+//     else if (currentZoom === 4 || currentZoom === 5) {
+//       afghanLayer.eachLayer(function(layer) {
+//           return layer.setIcon(afghanGlyphBig);
+//         });
+//         norwayLayer.eachLayer(function(layer) {
+//           return layer.setIcon(norwayGlyphBig);
+//         });
+//     } else {
+//       afghanLayer.eachLayer(function(layer) {
+//           return layer.setIcon(afghanGlyphBigger);
+//         });
+//         norwayLayer.eachLayer(function(layer) {
+//           return layer.setIcon(norwayGlyphBigger);
+//         });
+//     }
+// }); -->
