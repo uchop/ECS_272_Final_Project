@@ -17,12 +17,18 @@
         data(){
             return {
                 countryMap: [],
+                continentMap: [],
                 countriesProcessed:[],
 
                 countryNames: [],
 
-                glyphData: Map,
-                barChartData: Map,
+                continentNames: ['Africa', 'Asia', 'South America', 'Europe', 'North America', 'Australia'],
+
+                countryGlyphData: Map,
+                countryBarChartData: Map,
+
+                continentGlyphData: Map,
+                continentBarChartData: Map,
 
                 // color meaning: https://www.incredibleart.org/lessons/middle/color2.htm
                 // family: pink
@@ -44,19 +50,30 @@
             this.countryMap = this.normalizeData(this.myData);
             this.countryMap = this.preProcessCountry(this.countryMap);
 
+            this.continentMap = this.preProcessContinent(this.countryMap);
+
             // sort by happiness score
             this.countryMap.sort(function(a, b){return a.avg_happiness_score - b.avg_happiness_score})
 
+            // hash tables for country glyphs and bar charts
+            this.countryGlyphData = this.preProcessGlyph(this.countryMap);
+            this.countryBarChartData = this.preProcessBarChart(this.countryMap);
 
-            this.glyphData = this.preProcessGlyph(this.countryMap);
-            this.barChartData = this.preProcessBarChart(this.countryMap);
+
+            // hash tables for continents glyphs and bar charts
+            this.continentGlyphData = this.preProcessGlyph(this.continentMap);
+            this.continentBarChartData = this.preProcessBarChart(this.continentMap);
 
             // WARNING THESE FUNCTIONS are purposely commented out
             // Before uncommenting ensure that you intend to create a 132 * 2 pngs
             // Make sure this code is commented out before committing any changes
             // and comment out immediately after using
-            // this.createGlyphs("#png-container")
-            // this.createBarChart("#png-container")
+            // this.createGlyphs("#png-container", this.countryNames, this.countryGlyphData)
+            // this.createBarChart("#png-container", this.countryNames, this.countryBarChartData)
+
+            // continents
+            // this.createGlyphs("#png-container", this.continentNames, this.continentGlyphData)
+            // this.createBarChart("#png-container", this.continentNames, this.continentBarChartData)
 
 
         },
@@ -154,7 +171,7 @@
 
                     var country = {}
                     value.forEach(d => {
-                    country['country'] = d.Country;
+                    country['place'] = d.Country;
                     country['continent'] = d.continent;
                     if (d.happiness_score != 0) {
                         avg_happiness_score += d.happiness_score;
@@ -211,13 +228,120 @@
                     averagedCountries.push(country)
 
                     // push country name to countryNames list
-                    this.countryNames.push(country['country']);
+                    this.countryNames.push(country['place']);
                 }
 
                 return averagedCountries
             },
+            preProcessContinent(arr) {
+                var continentMap = new Map();
+
+                arr.forEach(d => {
+                    if (!continentMap.get(d.continent)) {
+                    continentMap.set(d.continent, [d]);
+                    }
+                    else {
+                    var temp = continentMap.get(d.continent);
+                    temp.push(d);
+                    continentMap.set(d.continent, temp);
+                    }
+                });
+                // return continentMap;
+
+                var averagedContinents = []
+                for (let [key, value] of continentMap) {
+
+                    var continent = {}
+                    var avg_happiness_score = 0;
+                    var avg_gdp_per_capita = 0;
+                    var avg_family = 0;
+                    var avg_health = 0;
+                    var avg_freedom = 0;
+                    var avg_generosity = 0;
+                    var avg_government_trust = 0;
+                    var avg_dystopia_residual = 0;
+                    var avg_social_support = 0;
+                    var avg_cpi_score = 0;
+
+                    var happiness_score_count = 0;
+                    var gdp_per_capita_count = 0;
+                    var family_count = 0;
+                    var health_count = 0;
+                    var freedom_count = 0;
+                    var generosity_count = 0;
+                    var government_trust_count = 0;
+                    var dystopia_residual_count = 0;
+                    var social_support_count = 0;
+                    var cpi_score_count = 0;
+
+                    value.forEach(d => {
+                    // continent['country'] = d.Country;
+                    continent['place'] = d.continent;
+                    if (d.avg_happiness_score != 0) {
+                        avg_happiness_score += d.avg_happiness_score;
+                        happiness_score_count += 1;
+                    }
+                    if (d.avg_gdp_per_capita != 0) {
+                        avg_gdp_per_capita += d.avg_gdp_per_capita;
+                        gdp_per_capita_count += 1;
+                    }
+                    if (d.avg_family != 0) {
+                        avg_family += d.avg_family;
+                        family_count += 1;
+                    }
+                    if (d.avg_health != 0) {
+                        avg_health += d.avg_health;
+                        health_count += 1;
+                    }
+                    if (d.avg_freedom != 0) {
+                        avg_freedom += d.avg_freedom;
+                        freedom_count += 1;
+                    }
+                    if (d.avg_generosity != 0) {
+                        avg_generosity += d.avg_generosity;
+                        generosity_count += 1;
+                    }
+                    if (d.avg_government_trust != 0) {
+                        avg_government_trust += d.avg_government_trust;
+                        government_trust_count += 1;
+                    }
+                    if (d.avg_dystopia_residual != 0) {
+                        avg_dystopia_residual += d.avg_dystopia_residual;
+                        dystopia_residual_count += 1;
+                    }
+                    if (d.avg_social_support != 0) {
+                        avg_social_support += d.avg_social_support;
+                        social_support_count += 1;
+                    }
+                    if (d.avg_cpi_score != 0) {
+                        avg_cpi_score += d.avg_cpi_score;
+                        cpi_score_count += 1;
+                    }
+
+                    });
+                    console.log(continent)
+                    continent.avg_happiness_score = avg_happiness_score / happiness_score_count;
+
+                    // console.log(avg_happiness_score);
+                    // console.log(continent.avg_happiness_score);
+
+                    continent.avg_gdp_per_capita = avg_gdp_per_capita / gdp_per_capita_count;
+                    continent.avg_family = avg_family / family_count;
+                    continent.avg_health = avg_health / health_count;
+                    continent.avg_freedom = avg_freedom / freedom_count;
+                    continent.avg_generosity = avg_generosity / generosity_count;
+                    continent.avg_government_trust = avg_government_trust / government_trust_count;
+                    continent.avg_dystopia_residual = avg_dystopia_residual / dystopia_residual_count;
+                    continent.avg_social_support = avg_social_support / social_support_count;
+                    continent.avg_cpi_score = avg_cpi_score / cpi_score_count;
+                    averagedContinents.push(continent)
+                }
+
+                return averagedContinents
+
+            },
             preProcessBarChart(arr) {
-                var barChartCountries = new Map()
+                var barChartData = new Map()
 
                 arr.forEach(d => {
 
@@ -241,14 +365,14 @@
                     government_trust.name = 'government_trust'
                     government_trust.value = d.avg_government_trust
 
-                    barChartCountries.set(d.country, [family, health, freedom, gdp_per_capita, government_trust]);
+                    barChartData.set(d.place, [family, health, freedom, gdp_per_capita, government_trust]);
                 });
 
-                return barChartCountries;
+                return barChartData;
 
             },
             preProcessGlyph(arr){
-                var glyphCountries = new Map()
+                var glyphData = new Map()
 
                 // define the petal path for each type of data
                 const petalPath = 'M 0,0 C -30,-30 -30,-30 0,-100 C 30,-30 30,-30 0,0';
@@ -268,20 +392,20 @@
                         })
                     })
 
-                    glyphCountries.set(d['country'],
+                    glyphData.set(d['place'],
                     {
-                        country: d['country'],
+                        place: d['place'],
                         petSize: 0.4,
                         petals: petals,
                         happiness: +happiness.toFixed(3),
                     })
                 });
 
-                return glyphCountries
+                return glyphData
 
             },
             // for creating glyphs
-            createGlyphs(viz){
+            createGlyphs(viz, arr, map){
 
                 // this.createEachGlyph(viz, "Afghanistan");
                 // this.createEachGlyph(viz, "India");
@@ -293,9 +417,9 @@
                 // need to add a small delay so that it doesn't get overloaded
 
                 let creation = async() => {
-                    for(let i = 0; i < this.countryNames.length; i++){
+                    for(let i = 0; i < arr.length; i++){
                         await timer(500);
-                        this.createEachGlyph(viz, this.countryNames[i]);
+                        this.createEachGlyph(viz, arr[i], map);
                     }
                 };
 
@@ -303,9 +427,9 @@
 
 
             },
-            createEachGlyph(viz, country){
+            createEachGlyph(viz, place, map){
 
-                let data = [this.glyphData.get(country)] // needs to be in an array for creation of petals
+                let data = [map.get(place)] // needs to be in an array for creation of petals
 
                 // clear out svg to create next one
                 d3.select(viz).selectAll("svg").remove();
@@ -366,29 +490,29 @@
                     .attr("text-anchor", "middle")
 
 
-                d3ToPng('#glyphs', country.replace(/ /g,'') + '-glyph', {scale: 7, quality: 1})
+                d3ToPng('#glyphs', place.replace(/ /g,'') + '-glyph', {scale: 7, quality: 1})
 
 
             },
 
-            createBarChart(viz){
+            createBarChart(viz, arr, map){
 
-                // need to add for loop to go through every country
+                // need to add for loop to go through every arr
 
                 function timer(ms) { return new Promise(res => setTimeout(res, ms)); }
 
                 // need to add a small delay so that it doesn't get overloaded
 
                 let creation = async() => {
-                    for(let i = 0; i < this.countryNames.length; i++){
+                    for(let i = 0; i < arr.length; i++){
                         await timer(500);
-                        this.createEachBar(viz, this.countryNames[i]);
+                        this.createEachBar(viz, arr[i], map);
                     }
                 };
 
                 creation();
             },
-            createEachBar(viz, country){
+            createEachBar(viz, place, map){
 
                 // clear out svg to create next one
                 d3.select(viz).selectAll("svg").remove();
@@ -416,7 +540,7 @@
                 //     .attr("transform", `translate(${margin.left},${margin.top})`);
 
                 // select country
-                const data = this.barChartData.get(country)
+                const data = map.get(place)
                 console.log(data)
 
                 // X axis
@@ -456,7 +580,7 @@
                     .attr('fill', (d,i) => this.color[i])
 
 
-                d3ToPng('#barChart', country.replace(/ /g,'') + '-bar', {scale: 5, quality: 1, background: "white"})
+                d3ToPng('#barChart', place.replace(/ /g,'') + '-bar', {scale: 5, quality: 1, background: "white"})
 
             }
         },
