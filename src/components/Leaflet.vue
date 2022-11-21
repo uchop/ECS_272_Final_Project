@@ -158,12 +158,6 @@ export default {
       ).addTo(map);
       map.setMaxBounds(map.getBounds());
 
-      const testIcon = L.icon({
-        iconUrl: 'https://web.northeastern.edu/mihc/images/NortheasternLogo.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -10],
-      });
 
     // *****************************************************************************************
       var continentLayer = new L.FeatureGroup();
@@ -183,7 +177,7 @@ export default {
       const nameWithoutSpaces = c.name.replace(/\s/g, "");
       var glyph = L.icon({
         iconUrl: `src/assets/glyph/continents/${nameWithoutSpaces}-glyph.png`,
-        iconSize: [200, 200],
+        iconSize: [150, 175],
         //iconAnchor: [0, 0],
         popupAnchor: [0, -10],
       });
@@ -199,7 +193,7 @@ export default {
                 const nameWithoutSpaces = d.name.common.replace(/\s/g, "");
                 var glyph = L.icon({
                   iconUrl: `src/assets/glyph/countries/${nameWithoutSpaces}-glyph.png`,
-                  iconSize: [200, 200],
+                  iconSize: [150, 175],
                   //iconAnchor: [0, 0],
                   popupAnchor: [0, -10],
                 });
