@@ -82,8 +82,8 @@ export default {
                 const nameWithoutSpaces = d.name.common.replace(/\s/g, "");
                 var glyph = L.icon({
                   iconUrl: `src/assets/glyph/${nameWithoutSpaces}-glyph.png`,
-                  iconSize: [70, 70],
-                  iconAnchor: [20, 20],
+                  iconSize: [200, 200],
+                  //iconAnchor: [0, 0],
                   popupAnchor: [0, -10],
                 });
                 var photoImg = `<h3>${nameWithoutSpaces}</h3><img src=src/assets/bar/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
