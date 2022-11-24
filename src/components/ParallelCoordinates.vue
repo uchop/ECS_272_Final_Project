@@ -203,7 +203,7 @@
 
                 // set the dimensions and margins of the graph
                 const margin = {top: 50, right: 50, bottom: 10, left: 30},
-                    width = 400 - margin.left - margin.right,
+                    width = 500 - margin.left - margin.right,
                     height = 400 - margin.top - margin.bottom;
 
                 // append the svg object to the body of the page
@@ -222,7 +222,7 @@
 
 
                 // Here I set the list of dimension manually to control the order of axis:
-                let dimensions = ["GDP_per_capita", "Family", "Health", "Freedom", "Government_trust"]
+                let dimensions = ["Family", "Health", "Freedom", "GDP_per_capita", "Government_trust"]
 
                 // a bit more processing of top 5 and bottom 5
 
@@ -234,10 +234,11 @@
                     processed.country = d.country;
                     processed.continent = d.continent;
                     processed.type = "top5";
-                    processed["GDP_per_capita"] = d.avg_gdp_per_capita;
+
                     processed["Family"] = d.avg_family;
                     processed["Health"] = d.avg_health;
                     processed["Freedom"] = d.avg_freedom;
+                    processed["GDP_per_capita"] = d.avg_gdp_per_capita;
                     processed["Government_trust"] = d.avg_government_trust;
                     top5CountriesProcessed.push(processed);
 
@@ -248,10 +249,11 @@
                     processed.country = d.country;
                     processed.continent = d.continent;
                     processed.type = "bottom5";
-                    processed["GDP_per_capita"] = d.avg_gdp_per_capita;
+
                     processed["Family"] = d.avg_family;
                     processed["Health"] = d.avg_health;
                     processed["Freedom"] = d.avg_freedom;
+                    processed["GDP_per_capita"] = d.avg_gdp_per_capita;
                     processed["Government_trust"] = d.avg_government_trust;
                     bottom5CountriesProcessed.push(processed);
 
@@ -349,7 +351,6 @@
     width: 92vw;
     height: 92vh;
     margin-left: 4%;
-    background: pink;
 }
 
 </style>
