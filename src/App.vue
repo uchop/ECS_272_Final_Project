@@ -1,5 +1,6 @@
 <template>
   <LeafletVue v-if="dataExists" :myData="myCsvData"/>
+  <OverlayVue v-if="dataExists" :myData="myCsvData"/>
   <ParallelCoordinatesVue v-if="dataExists" :myData="myCsvData"/>
   
   <!-- Add this one in ONLY if you want to generate PNGs, else keep commented out-->
@@ -11,6 +12,7 @@
 import * as d3 from 'd3';
 import csvPath from './assets/data/data.csv?raw';
 import LeafletVue from './components/Leaflet.vue';
+import OverlayVue from './components/Overlay.vue';
 import ParallelCoordinatesVue from './components/ParallelCoordinates.vue'
 import PNGGeneratorVue from './components/PNGGenerator.vue';
 
@@ -26,6 +28,7 @@ export default {
   },
   components: {
     LeafletVue,
+    OverlayVue,
     ParallelCoordinatesVue,
     PNGGeneratorVue,
   },

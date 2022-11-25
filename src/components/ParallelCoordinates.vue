@@ -5,7 +5,6 @@
 <script>
     import * as d3 from "d3";
     import _ from "lodash";
-    import * as d3ToPng from 'd3-svg-to-png';
 
     export default{
         name: "ParallelCoordinatesVue",
