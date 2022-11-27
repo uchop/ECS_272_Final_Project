@@ -320,7 +320,7 @@
                     .attr("d",  path)
                     .style("fill", "none" )
                     .style("stroke", function(d){ return( color(d.type))} )
-                    .style("opacity", 0.5)
+                    .style("opacity", 1)
                     .on("mouseover", highlight)
                     .on("mouseleave", doNotHighlight )
 
