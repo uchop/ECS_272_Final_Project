@@ -210,8 +210,8 @@
 
                 let color = ['#FF69B4', '#006400', '#00008B', '#DAA520', '#808080']
 
-                let viewBox_x = 800
-                let viewBox_y = 800
+                let viewBox_x = 400
+                let viewBox_y = 400
 
                 let top5_x = 200
                 let top5_y = 150
@@ -285,8 +285,10 @@
                 const svg = d3.select(viz)
                     .append('svg')
                         .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", [0, 0, viewBox_x, viewBox_y])
+                        .attr("viewBox", [200, 30, viewBox_x, viewBox_y])
                         .classed("svg-content-responsive", true)
+                        .style("height", "100%")
+                        .style("width", "100%")
                     .append('g')
                     //.attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -442,7 +444,7 @@
 <style scoped>
 #overlay-container{
     width: 92vw;
-    height: 92vh;
+    height: 100vh;
     margin-left: 4%;
 }
 

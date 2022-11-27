@@ -1,7 +1,9 @@
 <template>
-  <LeafletVue v-if="dataExists" :myData="myCsvData"/>
-  <OverlayVue v-if="dataExists" :myData="myCsvData"/>
-  <ParallelCoordinatesVue v-if="dataExists" :myData="myCsvData"/>
+  <div id="flex-container">
+    <div id="leaflet"><LeafletVue v-if="dataExists" :myData="myCsvData"/></div>
+    <div id="overlay"><OverlayVue v-if="dataExists" :myData="myCsvData"/></div>
+    <div id="paracords"><ParallelCoordinatesVue v-if="dataExists" :myData="myCsvData"/></div>
+</div>
   
   <!-- Add this one in ONLY if you want to generate PNGs, else keep commented out-->
   <!-- <PNGGeneratorVue v-if="dataExists" :myData="myCsvData"/> -->
@@ -72,6 +74,35 @@ export default {
   }
 }
 </script>
+<style scoped>
+
+#flex-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  /* Used to enable scrolling */
+  /* height: 2000px; */
+  background: linear-gradient(55deg, #0fb8ad 0%, #1fc8db 51%, lightgoldenrodyellow 85%);
+}
+
+/* #leaflet {
+  background-color: lightblue;
+}
+
+#overlay {
+  background-color: #0fb8ad;
+}
+
+#paracords {
+  background-color: lightgoldenrodyellow;
+} */
+
+  /* background-color: lightgoldenrodyellow; */
+
+</style>
+
 
 
 

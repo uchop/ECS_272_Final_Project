@@ -209,15 +209,18 @@
                 const svg = d3.select(viz)
                     .append('svg')
                         .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", [0, 0, 1000, 1000])
+                        .attr("viewBox", [50, 0, 400, 400])
                         .classed("svg-content-responsive", true)
+                        .style("height", "100%")
+                        .style("width", "100%")
                     .append('g')
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
                 // Color scale: give me a specie name, I return a color
                 const color = d3.scaleOrdinal()
                     .domain(["top5", "bottom5",])
-                    .range([ "#440154ff", "#21908dff",])
+                    .range([ "#ad1717", "#ed217a",])
+                    // .range([ "#440154ff", "#21908dff",])
 
 
                 // Here I set the list of dimension manually to control the order of axis:
@@ -335,9 +338,10 @@
                     .append("text")
                     .style("text-anchor", "middle")
                     .style("fill", "black")
+                    .style("font-weight", "bold")
                     .attr("y", -9)
                     .text(function(d) { return d; })
-                    .style("fill", "black")
+                        .style("fill", "black")
 
             },
         }
