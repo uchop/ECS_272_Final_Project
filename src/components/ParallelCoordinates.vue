@@ -214,7 +214,7 @@
                         .style("height", "100%")
                         .style("width", "100%")
                     .append('g')
-                    .attr("transform", `translate(${margin.left},${margin.top})`);
+                        .attr("transform", `translate(${margin.left},${margin.top})`);
 
                 // Color scale: give me a specie name, I return a color
                 const color = d3.scaleOrdinal()
@@ -262,6 +262,19 @@
 
                 });
 
+                // tooltip
+                const tooltip = d3.select(viz).append('div')
+                  .style('opacity', 0)
+                  .attr("class", "tooltip")
+                  .style("background-color", "white")
+                  .style("border", "solid")
+                  .style("border-width", "1px")
+                  .style("border-radius", "1px")
+                  .style("padding", "2px")
+                  .style("width",  "100px")
+                  .style("height", "26px")
+                  .style("text-align", "center")
+
 
                 // For each dimension, I build a linear scale. I store all in a y object
                 const y = {}
@@ -284,6 +297,7 @@
 
                     let selected_type = d.type
 
+                    /*
                     // first every group turns grey
                     d3.selectAll(".line")
                     .transition().duration(200)
@@ -293,15 +307,38 @@
                     d3.selectAll("." + selected_type)
                     .transition().duration(200)
                     .style("stroke", color(selected_type))
-                    .style("opacity", "1")
+                    .style("opacity", "1")*/
+
+                    console.log(event)
+
+                    d3.select(this)
+                        //.transition().duration(200)
+                        .raise()
+                        .style("stroke", color(selected_type))
+                        .style("opacity", "1")
+
+                    tooltip
+                        .style('opacity', 1)
+                        .html(`${d.country}`)
+                        .style("left", margin.left) // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+                        .style("top", margin.top)
+                        //.attr('x', event.offsetX)
+                        //.attr('y', event.offsetY)
+                        //.style("left", (d3.mouse(this)[0]+30) + "px")
+                        //.style("top", (d3.mouse(this)[1]+30) + "px")
                 }
 
                 // Unhighlight
                 const doNotHighlight = function(event, d){
                     d3.selectAll(".line")
-                    .transition().duration(200).delay(1000)
-                    .style("stroke", function(d){ return( color(d.type))} )
-                    .style("opacity", "1")
+                        //.transition().duration(200).delay(1000)
+                        .style("stroke", function(d){ return( color(d.type))} )
+                        .style("opacity", 0.5)
+
+                    tooltip
+                        .transition()
+                        .duration(200)
+                        .style("opacity", 0)
                 }
 
                 // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
@@ -320,7 +357,8 @@
                     .attr("d",  path)
                     .style("fill", "none" )
                     .style("stroke", function(d){ return( color(d.type))} )
-                    .style("opacity", 1)
+                    .style("opacity", 0.5)
+                    .style("stroke-width", "3px")
                     .on("mouseover", highlight)
                     .on("mouseleave", doNotHighlight )
 
