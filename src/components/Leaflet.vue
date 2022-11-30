@@ -1,11 +1,15 @@
 <template>
     <div id="map-container"></div>
+    <!-- <svg id="legend" height=19 width=18></svg> -->
   </template>
 
 <script>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet-feature-legend"
 import coordinates from '../data/coordinates.json'
+import * as d3 from "d3";
+import * as d3ToPng from 'd3-svg-to-png';
 
 export default {
   name: "LeafletVue",
@@ -22,8 +26,6 @@ export default {
     this.countryArray = this.preProcessCountry(this.myData);
     this.countryArray.sort(function(a, b){return b.avg_happiness_score - a.avg_happiness_score})
     this.assignRanking(this.countryArray);
-
-    console.log(Object.keys(this.countryMap).length);
     this.initializeLeafletMap();
   },
   methods: {
@@ -139,7 +141,7 @@ export default {
           minZoom: 2,
           // maxZoom: 4,
           // zoomSnap: 0.05
-        }).setView([25, 10], 2);
+        }).setView([45, 5], 2);
 
         // Commented line below is for using default map with mixed country languages
         // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -203,7 +205,49 @@ export default {
                 countryLayer.addLayer(L.marker(coordinates[d.name.common], {icon: glyph}).bindPopup(photoImg));
             }
           });
-    // *****************************************************************************************  
+    // *****************************************************************************************
+    // select the svg area
+      // var svg = d3.select("#legend")
+
+      // // // Handmade legend
+      // svg.append("circle").attr("cx",10).attr("cy",11).attr("r", 6).style("fill", "#FF69B4")
+      // svg.append("circle").attr("cx",10).attr("cy",11).attr("r", 6).style("fill", "#808080")
+      // svg.append("circle").attr("cx",200).attr("cy",160).attr("r", 6).style("fill", "#006400")
+      // svg.append("circle").attr("cx",200).attr("cy",190).attr("r", 6).style("fill", "#00008B")
+      // svg.append("circle").attr("cx",200).attr("cy",220).attr("r", 6).style("fill", "#DAA520")
+      // svg.append("circle").attr("cx",200).attr("cy",250).attr("r", 6).style("fill", "#808080")
+      // svg.append("text").attr("x", 220).attr("y", 130).text("Family").style("font-size", "15px").attr("alignment-baseline","middle")
+      // svg.append("text").attr("x", 220).attr("y", 160).text("Health").style("font-size", "15px").attr("alignment-baseline","middle")
+      // svg.append("text").attr("x", 220).attr("y", 190).text("Freedom").style("font-size", "15px").attr("alignment-baseline","middle")
+      // svg.append("text").attr("x", 220).attr("y", 220).text("GDP_per_capita").style("font-size", "15px").attr("alignment-baseline","middle")
+      // svg.append("text").attr("x", 220).attr("y", 250).text("Government_trust").style("font-size", "15px").attr("alignment-baseline","middle")
+      
+      // d3ToPng('#legend', 'grey', {
+      //   quality: 1,
+      //   // background: "white"
+      // })
+
+
+
+      // Leaflet icons are used to create the legend
+      const pinkIcon = L.icon({ iconUrl: 'src/assets/legend/pink.png', iconSize: [15, 15] });
+      const greenIcon = L.icon({ iconUrl: 'src/assets/legend/green.png', iconSize: [15, 15] });
+      const blueIcon = L.icon({ iconUrl: 'src/assets/legend/blue.png', iconSize: [15, 15] });
+      const yellowIcon = L.icon({ iconUrl: 'src/assets/legend/yellow.png', iconSize: [15, 15] });
+      const greyIcon = L.icon({ iconUrl: 'src/assets/legend/grey.png', iconSize: [15, 15] });
+      const legend = L.control.featureLegend({
+          position: "topright",
+          title: "Glyph Legend",
+          items: {
+              "Family": { icon: pinkIcon },
+              "Health": { icon: greenIcon },
+              "Freedom": { icon: blueIcon },
+              "GDP_per_capita": { icon: yellowIcon },
+              "Government_trust": { icon: greyIcon }
+          }
+      }).addTo(map);
+
+      // *****************************************************************************************
 
       map.on('zoomend', function() {
           if (map.getZoom() < 4){
@@ -223,12 +267,19 @@ export default {
 </script>
 
 <style scoped>
+
 #map-container {
   width: 92vw;
-  height: 92vh;
+  height: 88vh;
   margin-left: 4%;
   margin-top: 2%
 }
+
+/* .leaflet-control-feature-legend.leaflet-control {
+  font: icon;
+  padding-right: 5px;
+} */
+
 </style>
 
 <!-- // const glyph = L.icon({
