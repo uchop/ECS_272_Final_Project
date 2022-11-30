@@ -5,6 +5,7 @@
 <script>
     import * as d3 from "d3";
     import _ from "lodash";
+    import d3tip from "d3-tip"
 
     export default{
         name: "ParallelCoordinatesVue",
@@ -263,6 +264,7 @@
                 });
 
                 // tooltip
+                /*
                 const tooltip = d3.select(viz).append('div')
                   .style('opacity', 0)
                   .attr("class", "tooltip")
@@ -273,7 +275,27 @@
                   .style("padding", "2px")
                   .style("width",  "100px")
                   .style("height", "26px")
-                  .style("text-align", "center")
+                  .style("text-align", "center")*/
+
+
+                const tooltip = d3tip()
+                    .style('border', 'solid 2px black')
+                    .style('background-color', d3.color("rgba(255, 255, 255, 0.3)")) // using rgba to set opacity
+                    .style('border-radius', '10px')
+                    .style("padding", "5px")
+                    .style('float', 'left')
+                    //.style('font-family', 'monospace')
+                    .style("text-align", "center")
+                    .html((event, d) => `
+                    <div style='float: middle'>
+                        ${d.country}
+                    </div>`)
+                    .offset((event, d) =>{
+                        return [20,40]
+                    })
+
+                    // Apply tooltip to our SVG
+                svg.call(tooltip)
 
 
                 // For each dimension, I build a linear scale. I store all in a y object
@@ -317,6 +339,7 @@
                         .style("stroke", color(selected_type))
                         .style("opacity", "1")
 
+                    /*
                     tooltip
                         .style('opacity', 1)
                         .html(`${d.country}`)
@@ -325,7 +348,7 @@
                         //.attr('x', event.offsetX)
                         //.attr('y', event.offsetY)
                         //.style("left", (d3.mouse(this)[0]+30) + "px")
-                        //.style("top", (d3.mouse(this)[1]+30) + "px")
+                        //.style("top", (d3.mouse(this)[1]+30) + "px")*/
                 }
 
                 // Unhighlight
@@ -335,10 +358,11 @@
                         .style("stroke", function(d){ return( color(d.type))} )
                         .style("opacity", 0.5)
 
+                    /*
                     tooltip
                         .transition()
                         .duration(200)
-                        .style("opacity", 0)
+                        .style("opacity", 0)*/
                 }
 
                 // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
@@ -359,8 +383,10 @@
                     .style("stroke", function(d){ return( color(d.type))} )
                     .style("opacity", 0.5)
                     .style("stroke-width", "3px")
-                    .on("mouseover", highlight)
-                    .on("mouseleave", doNotHighlight )
+                    .on("mouseover.highlight", highlight)
+                    .on("mouseover.tooltip", tooltip.show)
+                    .on("mouseleave.highlight", doNotHighlight)
+                    .on("mouseout.tooltip", tooltip.hide)
 
                 // Draw the axis:
                 svg.selectAll("myAxis")
