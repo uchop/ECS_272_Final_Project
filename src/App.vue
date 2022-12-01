@@ -1,5 +1,7 @@
 <template>
   <div id="flex-container">
+    <TitleVue/>
+    <Preprocessing/>
     <div id="leaflet"><LeafletVue v-if="dataExists" :myData="myCsvData"/></div>
     <div id="overlay"><OverlayVue v-if="dataExists" :myData="myCsvData"/></div>
     <div id="paracords"><ParallelCoordinatesVue v-if="dataExists" :myData="myCsvData"/></div>
@@ -13,10 +15,13 @@
 
 import * as d3 from 'd3';
 import csvPath from './assets/data/data.csv?raw';
+import TitleVue from "./components/Title.vue";
+import PreprocessingVue from "./components/Preprocessing.vue"
 import LeafletVue from './components/Leaflet.vue';
 import OverlayVue from './components/Overlay.vue';
 import ParallelCoordinatesVue from './components/ParallelCoordinates.vue'
 import PNGGeneratorVue from './components/PNGGenerator.vue';
+import Preprocessing from './components/Preprocessing.vue';
 
 
 export default {
@@ -29,10 +34,12 @@ export default {
     }
   },
   components: {
+    TitleVue,
     LeafletVue,
     OverlayVue,
     ParallelCoordinatesVue,
     PNGGeneratorVue,
+    Preprocessing,
   },
   created(){
     this.drawFromCSV();

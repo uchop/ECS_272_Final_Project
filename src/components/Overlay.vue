@@ -1,5 +1,10 @@
 <template>
-    <div id="overlay-container"></div>
+    <div id="header">
+        <br>
+        <br>
+        <h1>The Happiest and Unhappiest Countries</h1>
+    </div>
+    <div id="overlay-container"> </div>
 </template>
 
 <script>
@@ -396,6 +401,7 @@
                     .style("font", "15px times")
                     //.style("font-family", "monospace")
 
+                /*
                 const top5Title = svg.selectAll("#top5Title")
                     .data(["Happiest 5 Countries"])
                     .join("text")
@@ -404,8 +410,9 @@
                     .attr("y", (d) => top5_y + 125)
                     .attr("text-anchor", "middle")
                     .style("font", "20px times")
-                    .style("font-weight", "bold")
+                    .style("font-weight", "bold")*/
 
+                /*
                 const bottom5Title = svg.selectAll("#bottom5Title")
                     .data(["Unhappiest Five Countries"])
                     .join("text")
@@ -414,14 +421,14 @@
                     .attr("y", (d) => bottom5_y + 125)
                     .attr("text-anchor", "middle")
                     .style("font", "20px times")
-                    .style("font-weight", "bold")
+                    .style("font-weight", "bold")*/
 
                 const top5Names = svg.selectAll("#top5Names")
                     .data(top5Data)
                     .join("text")
                     .text(d => d.country)
                     .attr("x", (d) => top5_x)
-                    .attr("y", (d, i) => top5_y + 150 + i * 20)
+                    .attr("y", (d, i) => top5_y + 120 + i * 20)
                     .attr("text-anchor", "middle")
                     .style("font", "15px times")
 
@@ -430,7 +437,7 @@
                     .join("text")
                     .text(d => d.country)
                     .attr("x", (d) => bottom5_x)
-                    .attr("y", (d, i) => bottom5_y + 150 + i * 20)
+                    .attr("y", (d, i) => bottom5_y + 120 + i * 20)
                     .attr("text-anchor", "middle")
                     .style("font", "15px times")
 
@@ -442,6 +449,12 @@
 
 
 <style scoped>
+
+#header{
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
 #overlay-container{
     width: 92vw;
     height: 100vh;
