@@ -9,13 +9,14 @@
 </div>
   
   <!-- Add this one in ONLY if you want to generate PNGs, else keep commented out-->
-  <!-- <PNGGeneratorVue v-if="dataExists" :myData="myCsvData"/> -->
+  <!-- <PNGGeneratorVue v-if="dataExists" :myData="myCsvData" :myRegionalData="myRegionalData"/>-->
 </template>
 
 <script>
 
 import * as d3 from 'd3';
 import csvPath from './assets/data/data.csv?raw';
+import regionalCsvPath from './assets/data/regions.csv?raw'
 import TitleVue from "./components/Title.vue";
 import PreprocessingVue from "./components/Preprocessing.vue";
 import GlyphVue from "./components/Glyph.vue"
@@ -32,6 +33,7 @@ export default {
     return {
       dataExists: false,
       myCsvData: [],
+      myRegionalData: [],
     }
   },
   components: {
@@ -52,6 +54,7 @@ export default {
     async drawFromCSV(){
       //async method
       this.myCsvData = d3.csvParse(await csvPath, d3.autoType)
+      this.myRegionalData = d3.csvParse(await regionalCsvPath, d3.autoType)
       this.dataExists = true;
       // console.log(this.myCsvData)
       // d3.csv(csvPath.text()).then((data) =>{

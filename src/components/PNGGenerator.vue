@@ -24,11 +24,18 @@
 
                 continentNames: ['Africa', 'Asia', 'South America', 'Europe', 'North America', 'Australia'],
 
+                regionalNames:[],
+
+                regionalMap: [],
+
                 countryGlyphData: Map,
                 countryBarChartData: Map,
 
                 continentGlyphData: Map,
                 continentBarChartData: Map,
+
+                regionalGlyphData: Map,
+                regionalBarChartData: Map,
 
                 // color meaning: https://www.incredibleart.org/lessons/middle/color2.htm
                 // family: pink
@@ -43,6 +50,7 @@
         },
         props:{
             myData: Array,
+            myRegionalData: Array,
         },
         mounted(){
 
@@ -64,6 +72,16 @@
             this.continentGlyphData = this.preProcessGlyph(this.continentMap);
             this.continentBarChartData = this.preProcessBarChart(this.continentMap);
 
+            // get regionalData
+            this.regionalMap = this.preProcessRegionalData(this.countryMap);
+
+            // hashtables for regional glyphs and bar charts
+            this.regionalGlyphData = this.preProcessGlyph(this.regionalMap);
+            this.regionalBarChartData = this.preProcessBarChart(this.regionalMap)
+
+            // console.log(this.regionalMap)
+            // console.log(this.regionalNames)
+
             // WARNING THESE FUNCTIONS are purposely commented out
             // Before uncommenting ensure that you intend to create a 132 * 2 pngs
             // Make sure this code is commented out before committing any changes
@@ -74,6 +92,10 @@
             // continents
             // this.createGlyphs("#png-container", this.continentNames, this.continentGlyphData)
             // this.createBarChart("#png-container", this.continentNames, this.continentBarChartData)
+
+            // regions
+            // this.createGlyphs("#png-container", this.regionalNames, this.regionalGlyphData)
+            // this.createBarChart("#png-container", this.regionalNames, this.regionalBarChartData)
 
 
         },
@@ -339,6 +361,96 @@
 
                 return averagedContinents
 
+            },
+            preProcessRegionalData(arr){
+                var mapCountry = new Map()
+                var mapRegional = new Map()
+
+                var regionalData = [];
+
+                // first place all country Data into a map for easy lookup when parsing regional data
+                for(let i = 0; i < arr.length; i++){
+                    let country = arr[i];
+                    mapCountry.set(country['place'], country)
+                }
+
+                // now go through regional csv to put in Map
+                for(let i = 0; i < this.myRegionalData.length; i++){
+                    let place = this.myRegionalData[i];
+
+                    let region = place['Region']
+                    let country = place['Country']
+
+                    if(mapCountry.has(country)){
+                        let countryData = mapCountry.get(country)
+                        if(mapRegional.has(region)){
+                            let regionData = mapRegional.get(region)
+
+                            regionData['happiness_score'].push(countryData.avg_happiness_score)
+                            regionData['gdp_per_capita'].push(countryData.avg_gdp_per_capita)
+                            regionData['family'].push(countryData.avg_family)
+                            regionData['health'].push(countryData.avg_health)
+                            regionData['freedom'].push(countryData.avg_freedom)
+                            regionData['generosity'].push(countryData.avg_generosity)
+                            regionData['government_trust'].push(countryData.avg_government_trust)
+                            regionData['dystopia_residual'].push(countryData.avg_dystopia_residual)
+                            regionData['social_support'].push(countryData.avg_social_support)
+                            regionData['cpi_score'].push(countryData.avg_cpi_score)
+                        }else{
+                            // add region to regionalNames
+                            this.regionalNames.push(region)
+
+                            let regionData = {}
+
+                            regionData['happiness_score'] = [countryData.avg_happiness_score]
+                            regionData['gdp_per_capita'] = [countryData.avg_gdp_per_capita]
+                            regionData['family'] = [countryData.avg_family]
+                            regionData['health'] = [countryData.avg_health]
+                            regionData['freedom'] = [countryData.avg_freedom]
+                            regionData['generosity'] = [countryData.avg_generosity]
+                            regionData['government_trust'] = [countryData.avg_government_trust]
+                            regionData['dystopia_residual'] = [countryData.avg_dystopia_residual]
+                            regionData['social_support'] = [countryData.avg_social_support]
+                            regionData['cpi_score'] = [countryData.avg_cpi_score]
+
+                            mapRegional.set(region, regionData)
+                        }
+                    }
+                }
+
+
+                // now we need to take average for each region and place in regionalData
+                mapRegional.forEach((value, key) =>{
+                    let regionData = {}
+                    regionData.place = key;
+
+                    // now need to take average of each parameter
+                    // happiness score
+                    let happiness = value['happiness_score']
+                    let gdp = value['gdp_per_capita']
+                    let family = value['family']
+                    let health = value['health']
+                    let freedom = value['freedom']
+                    let generosity = value['generosity']
+                    let government = value['government_trust']
+                    let dystopia = value['dystopia_residual']
+                    let social = value['social_support']
+                    let cpi = value['cpi_score']
+
+                    regionData.avg_happiness_score = happiness.reduce((a, b) => a + b) / happiness.length;
+                    regionData.avg_gdp_per_capita = gdp.reduce((a, b) => a + b) / gdp.length;
+                    regionData.avg_family = family.reduce((a, b) => a + b) / family.length;
+                    regionData.avg_health = health.reduce((a, b) => a + b) / health.length;
+                    regionData.avg_freedom = freedom.reduce((a, b) => a + b) / freedom.length;
+                    regionData.avg_generosity = generosity.reduce((a, b) => a + b) / generosity.length;
+                    regionData.avg_government_trust = government.reduce((a, b) => a + b) / government.length;
+                    regionData.avg_dystopia_residual = dystopia.reduce((a, b) => a + b) / dystopia.length;
+                    regionData.avg_social_support = social.reduce((a, b) => a + b) / social.length;
+                    regionData.avg_cpi_score = cpi.reduce((a, b) => a + b) / cpi.length;
+
+                    regionalData.push(regionData)
+                })
+                return regionalData
             },
             preProcessBarChart(arr) {
                 var barChartData = new Map()
