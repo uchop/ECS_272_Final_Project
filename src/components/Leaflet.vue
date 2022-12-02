@@ -163,6 +163,7 @@ export default {
 
     // *****************************************************************************************
       var continentLayer = new L.FeatureGroup();
+      var regionLayer = new L.FeatureGroup();
       var countryLayer = new L.FeatureGroup();
 
     // *****************************************************************************************   
@@ -187,6 +188,37 @@ export default {
       continentLayer.addLayer(L.marker(c.coordinates, {icon: glyph}).bindPopup(photoImg));
     });
     map.addLayer(continentLayer)
+
+
+    const regions = [
+        {name: "Middle East", coordinates : [30.251070, 42.660177]},
+        {name: "Northern Africa", coordinates : [18.863885, 15.069074]},
+        {name: "Southern Africa", coordinates : [-5.366076, 24.757963]},
+        {name: "North America", coordinates : [37.335086, -101.125421]},
+        {name: "South America", coordinates : [-13.678328, -58.418161]},
+        {name: "Central America", coordinates : [14.682486, -89.141088]},
+        {name: "Australia", coordinates : [-21.029250, 133.020550]},
+        {name: "East Asia", coordinates : [30.148296, 103.694696]},
+        {name: "Southeast Asia", coordinates : [-0.325918, 113.517283]},
+        {name: "South Asia", coordinates : [25.053757, 73.966964]},
+        {name: "Central Asia", coordinates : [36.420969, 64.324529]},
+        {name: "Northern Europe", coordinates : [68.035336, 24.869680]},
+        {name: "Western Europe", coordinates : [48.033470, -1.069856]},
+        {name: "Eastern Europe", coordinates : [48.341360, 34.244692]},
+        {name: "Southern Europe", coordinates : [40.783952, 15.341137]}
+    ]
+
+    regions.forEach(c => {
+      const nameWithoutSpaces = c.name.replace(/\s/g, "");
+      var glyph = L.icon({
+        iconUrl: `src/assets/glyph/regions/${nameWithoutSpaces}-glyph.png`,
+        iconSize: [150, 175],
+        //iconAnchor: [0, 0],
+        popupAnchor: [0, -10],
+      });
+      var photoImg = `<h3>${c.name}</h3><img src=src/assets/bar/regions/${nameWithoutSpaces}-bar.png height="250px" width="250px"/>`;
+      regionLayer.addLayer(L.marker(c.coordinates, {icon: glyph}).bindPopup(photoImg));
+    });
 
       const response = await fetch('https://restcountries.com/v3.1/all');
       const data = await response.json();
@@ -249,13 +281,32 @@ export default {
 
       // *****************************************************************************************
 
+      // map.on('zoomend', function() {
+      //     if (map.getZoom() < 4){
+      //       map.addLayer(continentLayer);
+      //       map.removeLayer(countryLayer);
+      //     }
+      //     else {
+      //       map.removeLayer(continentLayer);
+      //       map.addLayer(countryLayer);
+      //     }
+      // });
+
       map.on('zoomend', function() {
           if (map.getZoom() < 4){
-            map.addLayer(continentLayer);
             map.removeLayer(countryLayer);
+            map.removeLayer(regionLayer);
+            map.addLayer(continentLayer);
+            
+          }
+          else if (map.getZoom() === 4) {
+            map.removeLayer(countryLayer);
+            map.removeLayer(continentLayer);
+            map.addLayer(regionLayer);
           }
           else {
             map.removeLayer(continentLayer);
+            map.removeLayer(regionLayer);
             map.addLayer(countryLayer);
           }
       });
