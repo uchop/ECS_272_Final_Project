@@ -3,11 +3,11 @@
         <div id="parallel-coordinates-container"></div>
         <div id="parallel-annotation">
             <h1 id="takeaways">The Takeaways</h1>
-            <p><i>Family, health, and GDP</i> matter for all countries</p><br>
-            <p>Freedom is <i>more important</i> for the top five, already have established family and health variables due
+            <p><i>Family, Health, and GDP_per_capita</i> matter for all countries</p><br>
+            <p>Freedom is <i>more important</i> for the top five, which already have established family and health variables due
                  to their better infrastructure and being more developed countries.</p><br>
-            <p>Freedom is <i>more variable</i> for the bottom five. These are <i>developing nations</i>, as they are focusing
-                 more on their immediate needs of trying to keep their families safe and healthy.</p>
+            <p>Freedom is <i>more variable</i> for the bottom five. These are <i>developing nations</i>, that are more focused
+                 on their immediate needs of economic health and trying to keep their families safe and healthy.</p>
         </div>
     </div>
 </template>
@@ -220,7 +220,7 @@
                 const svg = d3.select(viz)
                     .append('svg')
                         .attr("preserveAspectRatio", "xMidYMid meet")
-                        .attr("viewBox", [50, 0, 400, 400])
+                        .attr("viewBox", [25, 0, 500, 500])
                         .classed("svg-content-responsive", true)
                         .style("height", "100%")
                         .style("width", "100%")
