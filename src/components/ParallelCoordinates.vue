@@ -1,5 +1,15 @@
 <template>
-    <div id="parallel-coordinates-container"></div>
+    <div id="parallel-slide">
+        <div id="parallel-coordinates-container"></div>
+        <div id="parallel-annotation">
+            <h1 id="takeaways">The Takeaways</h1>
+            <p><i>Family, health, and GDP</i> matter for all countries</p><br>
+            <p>Freedom is <i>more important</i> for the top five, already have established family and health variables due
+                 to their better infrastructure and being more developed countries.</p><br>
+            <p>Freedom is <i>more variable</i> for the bottom five. These are <i>developing nations</i>, as they are focusing
+                 more on their immediate needs of trying to keep their families safe and healthy.</p>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -414,10 +424,43 @@
 
 
 <style scoped>
-#parallel-coordinates-container{
+/* #parallel-coordinates-container{
     width: 92vw;
     height: 92vh;
     margin-left: 4%;
+} */
+#parallel-slide {
+    display: flex;
+    flex-direction: row;
 }
 
+#parallel-coordinates-container {
+    width: 130%;
+    height: 92vh;
+    /* margin-left: 4%; */
+}
+
+#parallel-annotation {
+    padding-top: 10%;
+    padding-right: 3%;
+}
+
+#takeaways {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bolder;
+    margin-bottom: 2%;
+}
+p {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 500;
+    }
+
+/* #parallel-annotation{
+    width: 50%;
+    height: 92vh;
+    margin-left: 4%;
+} */
 </style>
