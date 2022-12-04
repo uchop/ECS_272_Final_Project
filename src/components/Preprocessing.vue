@@ -3,7 +3,7 @@
         <h1 id="data-header">Data</h1>
         <p>To understand happiness in different countries, we used the Kaggle dataset: Happiness and Corruption by Country from 2015-2020.
         <br>
-        The data list many factors that affect happiness for each country and year: GDP per capita, Family, Health, Freedom, Government Trust, Social Support, Dystopia Residual, Generosity, Continent, CPI Score.
+        The data list many factors that affect happiness for each country and year: GDP per capita, Family, Health, Freedom, Government Trust, Social Support, Dystopia Residual, Generosity, Continent name, CPI Score.
         <br>
         <br>
         </p>
@@ -53,7 +53,7 @@
                 <td>4</td>
             </tr>
             <tr>
-                <td>Continent</td>
+                <td>Continent name</td>
                 <td>5</td>
             </tr>
             <tr>
@@ -65,7 +65,7 @@
                 <td>7</td>
             </tr>
             <tr>
-                <td>Country</td>
+                <td>Country name</td>
                 <td>8</td>
             </tr>
 
